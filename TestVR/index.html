@@ -22,6 +22,7 @@
     <script type="module">
         import * as THREE from 'three';
 
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { BoxLineGeometry } from 'three/addons/geometries/BoxLineGeometry.js';
         import { VRButton } from 'three/addons/webxr/VRButton.js';
         import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
@@ -32,7 +33,9 @@
         let controller1, controller2;
         let controllerGrip1, controllerGrip2;
 
-        let room, marker, floor, baseReferenceSpace;
+        // let controls;
+
+        let room, marker, floor, baseReferenceSpace, baseStart;
 
         let INTERSECTION;
         const tempMatrix = new THREE.Matrix4();
@@ -49,14 +52,20 @@
 
             // Défini la caméra
 
-            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
             camera.position.set( 0, 1.6, 3 );
+
+            // Défini les controles souris
+
+            // controls = new OrbitControls( camera, container );
+			// controls.target.set( 0, 1, 0 );
+			// controls.update();
 
             // Défini la pièce
 
             room = new THREE.LineSegments(
-                new BoxLineGeometry( 6, 6, 6, 1, 1, 1).translate(0, 3, 0),
-                new THREE.LineBasicMaterial( { color: 0xffffff})
+                new BoxLineGeometry( 20, 6, 20, 1, 1, 1).translate(0, 3, 0),
+                new THREE.LineBasicMaterial( { color: 0xff0000})
             )
             scene.add( room );
 
@@ -81,14 +90,36 @@
             // Défini le sol
 
             floor = new THREE.Mesh(
-                new THREE.PlaneGeometry( 4.8, 4.8, 2, 2 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0x808080, transparent: true, opacity: 0.25 } )
+                new THREE.PlaneGeometry( 18, 18, 2, 2 ).rotateX( - Math.PI / 2 ),
+                new THREE.MeshBasicMaterial( { color: 0xff000000, transparent: true, opacity: 0.25 } )
             );
             scene.add( floor );
+
+            // Défini la zone de départ
+
+            baseStart = new THREE.Mesh(
+                new THREE.PlaneGeometry( 1, 1, 1, 1 ).rotateX( - Math.PI / 2 ),
+                new THREE.MeshBasicMaterial( { color: 0x008000, transparent: true, opacity: 0.25 } )    
+            )
+
 
             // Défini le Raycaster
 
             raycaster = new THREE.Raycaster();
+
+            // TEST AJOUT BLOC 
+            
+            // const sphereGeometry = new THREE.BoxGeometry(1, 1, 1)
+            // const sphereMaterial = new THREE.MeshStandardMaterial({
+            //     color: 0xA1A1A1,
+            //     roughness: 1.0,
+            //     metalness: 0.7,
+            // })
+            // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            // sphere.position.x = 0.7;
+            // sphere.position.y = 0.4;
+            // sphere.position.z = 0.4;
+            // scene.add(sphere)
 
 
             // RENDER
@@ -103,7 +134,6 @@
 
             document.body.appendChild( renderer.domElement );
             document.body.appendChild( VRButton.createButton( renderer ) );
-
 
             // CONTROLLERS
 
