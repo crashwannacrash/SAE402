@@ -22,12 +22,11 @@
     <script type="module">
         import * as THREE from 'three';
 
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { BoxLineGeometry } from 'three/addons/geometries/BoxLineGeometry.js';
         import { VRButton } from 'three/addons/webxr/VRButton.js';
         import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 
-        let container;
         let camera, scene, renderer, raycaster;
         let hand1, hand2;
         let controller1, controller2;
@@ -45,6 +44,9 @@
 
         function init() { 
 
+            // const container = document.createElement( 'div' );
+            // document.body.appendChild(container);
+
             // Défini la scène
             
             scene = new THREE.Scene();
@@ -58,7 +60,7 @@
             // Défini les controles souris
 
             // controls = new OrbitControls( camera, container );
-			// controls.target.set( 0, 1, 0 );
+			// controls.target.set( 3, 30,30  );
 			// controls.update();
 
             // Défini la pièce
