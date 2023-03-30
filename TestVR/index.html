@@ -28,6 +28,7 @@
         import { VRButton } from 'three/addons/webxr/VRButton.js';
         import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
         let camera, scene, renderer, raycaster, labelRenderer;
         let hand1, hand2;
@@ -48,19 +49,30 @@
 
             // Défini la scène
             scene = new THREE.Scene();
-            scene.background = new THREE.Color( 0x505050 );
+            // scene.background = new THREE.Color( 0x505050 );
+            new RGBELoader()
+                .setPath('./assets/background/')
+                .load( 'background2.hdr', function ( texture ) {
+                    texture.mapping = THREE.EquirectangularReflectionMapping;
+
+                    scene.background = texture;
+                    scene.environment = texture;
+
+                    render();
+            });
 
 
             // Défini les caméras
-            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 2000 );
             camera.position.set( 0, 1.6, 3 );
+            camera.lookAt(new THREE.Vector3(0,0,0));
 
 
             // Défini la pièce
             let roomSize = 45
             room = new THREE.LineSegments(
-                new BoxLineGeometry( roomSize + 1, 10, roomSize, 1, 1, 1).translate(0, 3, 0),
-                new THREE.LineBasicMaterial( { color: 0xff000})
+                new BoxLineGeometry( roomSize + 1, 20, roomSize, 1, 1, 1).translate(0, 3, 0),
+                new THREE.LineBasicMaterial( { color: 0xcccccc})
             )
             scene.add( room );
 
@@ -84,25 +96,35 @@
             // Défini le marker
             marker = new THREE.Mesh(
                 new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0x808080 } )
+                new THREE.MeshBasicMaterial( { color: 0xff0000 } )
             );
             scene.add( marker );
 
 
-            // Défini le sol
+            // Défini le sol du labyrinthe
             floor = new THREE.Mesh(
                 new THREE.PlaneGeometry( roomSize + 1, roomSize, 2, 2 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0xcccccc } )
+                new THREE.MeshBasicMaterial( { color: 0x4650db } )
             );
-            floor.position.y = -2;
+            floor.position.y = -7;
             scene.add( floor );
+
+            // Défini le sol de la scène (n'influe pas avec les collisions)
+            const floorPiece = new THREE.Mesh(
+                new THREE.PlaneGeometry( 100, 100, 2, 2 ).rotateX( - Math.PI / 2 ),
+                new THREE.MeshBasicMaterial( { color: 0x1c2129})
+            );
+            floorPiece.position.y = -7.1;
+            scene.add( floorPiece );
 
 
             // Défini la zone de départ
             baseStart = new THREE.Mesh(
-                new THREE.PlaneGeometry( 1, 1, 1, 1 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0x008000, transparent: true, opacity: 0.25 } )    
+                new THREE.PlaneGeometry( 2, 2, 1, 1 ).rotateX( - Math.PI / 2 ),
+                new THREE.MeshBasicMaterial( { color: 0x008000} )    
             )
+            baseStart.position.y = -6.99;
+            scene.add(baseStart)
 
 
             // Défini le labyrinthe
@@ -110,15 +132,33 @@
             maze.load("./assets/maze/maze.gltf", function (gltf) {
                 const model = gltf.scene;
                 gltf.scene.scale.set(2,2,2);
-                const box = new THREE.Box3().setFromObject( gltf.scene );
+                
+                // const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                // model.traverse(function(child) {
+                //     if (child.isMesh) {
+                //         child.material = material;
+                //         child.castShadow = true;
+                //         child.receiveShadow = true;
+                //         child.geometry.computeVertexNormals();
+                //         child.renderOrder = 0;
 
+                //         const box = new THREE.Box3().setFromObject( child );
+                //         const center = box.getCenter( new THREE.Vector3() );
+                //         child.position.x += ( child.position.x - center.x );
+                //         child.position.y = - 2;
+                //         child.position.z += ( child.position.z - center.z );
+
+                //         scene.add(child);
+                //     }
+                // });
+                
                 // CENTRER L'OBJET A PARTIR DU MILIEU
+                const box = new THREE.Box3().setFromObject( gltf.scene );
                 const center = box.getCenter( new THREE.Vector3() );
                 gltf.scene.position.x += ( gltf.scene.position.x - center.x );
-                gltf.scene.position.y = - 2;
+                gltf.scene.position.y = - 7;
                 gltf.scene.position.z += ( gltf.scene.position.z - center.z );
 
-                // MODIFIER LE SCALE DE L'OBJET
                 scene.add(model);
             }, undefined, function ( error ) {
                 console.error( error );
@@ -134,21 +174,25 @@
             // Plastique
             const plastique = new THREE.Mesh( forme, materialPlastique );
             plastique.position.x = - 26 
+            plastique.position.y = - 5 
             plastique.position.z = - 25
             scene.add( plastique );
             // Verre
             const verre = new THREE.Mesh( forme, materialVerre );
             verre.position.x = 26 
+            verre.position.y = - 5
             verre.position.z = 25
             scene.add( verre );
             // Métaux
             const metaux = new THREE.Mesh( forme, materialMetaux );
             metaux.position.x = 26 
+            metaux.position.y = - 5
             metaux.position.z = - 25
             scene.add( metaux );
             // Cartons
             const cartons = new THREE.Mesh( forme, materialCartons );
             cartons.position.x = - 26 
+            cartons.position.y = - 5
             cartons.position.z = 25
             scene.add( cartons );
 
@@ -156,6 +200,86 @@
             // Défini le Raycaster
             raycaster = new THREE.Raycaster();
 
+
+            // Ajouts props (test)
+            const femme1 = new GLTFLoader();
+            femme1.load("./assets/femme.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(2,2,2);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                glb.scene.rotateY(-190)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 2;
+                glb.scene.position.y = - 7.3;
+                glb.scene.position.z += ( glb.scene.position.z - center.z );
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+            const femme2 = new GLTFLoader();
+            femme2.load("./assets/femme.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(2,2,2);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                glb.scene.rotateY(190)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) + 2;
+                glb.scene.position.y = - 7.3;
+                glb.scene.position.z += ( glb.scene.position.z - center.z );
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+            const pomplar = new GLTFLoader();
+            pomplar.load("./assets/pomplar.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(0.8,0.8,0.8);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x );
+                glb.scene.position.y = - 6;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+            const poubelles1 = new GLTFLoader();
+            poubelles1.load("./assets/poubelles.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(9,9,9);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x );
+                glb.scene.position.y = - 7;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 40;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+            const poubelles2 = new GLTFLoader();
+            poubelles2.load("./assets/poubelles.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(9,9,9);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                glb.scene.rotateY(15.71)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x );
+                glb.scene.position.y = - 7;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) + 40;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
 
             // Ajout Controls
             labelRenderer = new CSS2DRenderer();
@@ -282,11 +406,8 @@
                 raycaster.ray.origin.setFromMatrixPosition( controller1.matrixWorld );
 				raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-                // const intersects = raycaster.intersectObjects( [ floor ] );
-                const intersects = raycaster.intersectObjects( maze, true );
-                // if ( intersects.length > 0 ) {
-                //     INTERSECTION = intersects[ 0 ].point;
-                // }
+                const intersects = raycaster.intersectObjects( [ floor ] );
+                // const intersects = raycaster.intersectObjects( maze, true );
                 if ( intersects.length > 0 ) {
                     INTERSECTION = intersects[ 0 ].point;
                 }
@@ -297,11 +418,8 @@
                 raycaster.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
                 raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-                // const intersects = raycaster.intersectObjects( [ floor ] );
-                const intersects = raycaster.intersectObjects( maze, true );
-                // if ( intersects.length > 0 ) {
-                //     INTERSECTION = intersects[ 0 ].point;
-                // }    
+                const intersects = raycaster.intersectObjects( [ floor ] );
+                // const intersects = raycaster.intersectObjects( maze, true );  
                 if ( intersects.length > 0 ) {
                     INTERSECTION = intersects[ 0 ].point;
                 }    
