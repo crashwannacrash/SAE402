@@ -57,8 +57,9 @@
 
 
             // Défini la pièce
+            let roomSize = 45
             room = new THREE.LineSegments(
-                new BoxLineGeometry( 60, 6, 60, 1, 1, 1).translate(0, 3, 0),
+                new BoxLineGeometry( roomSize + 1, 10, roomSize, 1, 1, 1).translate(0, 3, 0),
                 new THREE.LineBasicMaterial( { color: 0xff000})
             )
             scene.add( room );
@@ -68,11 +69,16 @@
             scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) ); 
 
 
-            // Défini la lumière
-            const dl = new THREE.DirectionalLight(0xcccccc, 0.5);
-            dl.position.set(10, 50, 10);
-            const dlHepler = new THREE.DirectionalLightHelper(dl, 3);
-            scene.add(dl)
+            // Défini les lumières
+            const dl1 = new THREE.DirectionalLight(0xcccccc, 0.8);
+            dl1.position.set(10, 50, 10);
+            const dl1Hepler = new THREE.DirectionalLightHelper(dl1, 3);
+            scene.add(dl1)
+            
+            const dl2 = new THREE.DirectionalLight(0xcccccc, 0.3);
+            dl2.position.set(-10, 50, -10);
+            const dl2Hepler = new THREE.DirectionalLightHelper(dl2, 3);
+            scene.add(dl2)
 
 
             // Défini le marker
@@ -85,9 +91,10 @@
 
             // Défini le sol
             floor = new THREE.Mesh(
-                new THREE.PlaneGeometry( 58.5, 58.5, 2, 2 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0xff000000, transparent: true, opacity: 0 } )
+                new THREE.PlaneGeometry( roomSize + 1, roomSize, 2, 2 ).rotateX( - Math.PI / 2 ),
+                new THREE.MeshBasicMaterial( { color: 0xcccccc } )
             );
+            floor.position.y = -2;
             scene.add( floor );
 
 
@@ -100,7 +107,7 @@
 
             // Défini le labyrinthe
             maze = new GLTFLoader();
-            maze.load("./assets/scene.gltf", function (gltf) {
+            maze.load("./assets/maze.gltf", function (gltf) {
                 const model = gltf.scene;
                 gltf.scene.scale.set(2,2,2);
                 const box = new THREE.Box3().setFromObject( gltf.scene );
@@ -108,7 +115,7 @@
                 // CENTRER L'OBJET A PARTIR DU MILIEU
                 const center = box.getCenter( new THREE.Vector3() );
                 gltf.scene.position.x += ( gltf.scene.position.x - center.x );
-                // gltf.scene.position.y += ( gltf.scene.position.y - center.y );
+                gltf.scene.position.y = - 2;
                 gltf.scene.position.z += ( gltf.scene.position.z - center.z );
 
                 // MODIFIER LE SCALE DE L'OBJET
@@ -116,6 +123,34 @@
             }, undefined, function ( error ) {
                 console.error( error );
             } );
+
+
+            // TOURS 
+            const forme = new THREE.BoxGeometry( 3, 20, 3 ).translate(0, 8, 0);
+            const materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
+            const materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
+            const materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
+            const materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
+            // Plastique
+            const plastique = new THREE.Mesh( forme, materialPlastique );
+            plastique.position.x = - 26 
+            plastique.position.z = - 25
+            scene.add( plastique );
+            // Verre
+            const verre = new THREE.Mesh( forme, materialVerre );
+            verre.position.x = 26 
+            verre.position.z = 25
+            scene.add( verre );
+            // Métaux
+            const metaux = new THREE.Mesh( forme, materialMetaux );
+            metaux.position.x = 26 
+            metaux.position.z = - 25
+            scene.add( metaux );
+            // Cartons
+            const cartons = new THREE.Mesh( forme, materialCartons );
+            cartons.position.x = - 26 
+            cartons.position.z = 25
+            scene.add( cartons );
 
 
             // Défini le Raycaster
