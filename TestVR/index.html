@@ -26,6 +26,7 @@
         import { BoxLineGeometry } from 'three/addons/geometries/BoxLineGeometry.js';
         import { VRButton } from 'three/addons/webxr/VRButton.js';
         import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
         let camera, scene, renderer, raycaster;
         let hand1, hand2;
@@ -34,7 +35,7 @@
 
         // let controls;
 
-        let room, marker, floor, baseReferenceSpace, baseStart;
+        let room, marker, floor, baseReferenceSpace, baseStart, maze;
 
         let INTERSECTION;
         const tempMatrix = new THREE.Matrix4();
@@ -103,6 +104,16 @@
                 new THREE.PlaneGeometry( 1, 1, 1, 1 ).rotateX( - Math.PI / 2 ),
                 new THREE.MeshBasicMaterial( { color: 0x008000, transparent: true, opacity: 0.25 } )    
             )
+
+            // Défini le labyrinthe
+
+            maze = new GLTFLoader();
+            maze.load("./assets/scene.gltf", function (gltf) {
+                scene.add(gltf.scene);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
 
 
             // Défini le Raycaster
