@@ -22,12 +22,14 @@
     <script type="module">
         import * as THREE from 'three';
 
-        // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { BoxLineGeometry } from 'three/addons/geometries/BoxLineGeometry.js';
         import { VRButton } from 'three/addons/webxr/VRButton.js';
         import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-        let camera, scene, renderer, raycaster;
+        let camera, scene, renderer, raycaster, labelRenderer;
         let hand1, hand2;
         let controller1, controller2;
         let controllerGrip1, controllerGrip2;
@@ -205,6 +207,57 @@
             //
 
             window.addEventListener( 'resize', onWindowResize, false );
+
+            // TEST LABELS
+
+            labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize( window.innerWidth, window.innerHeight );
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            document.body.appendChild( labelRenderer.domElement );
+
+            const controls = new OrbitControls( camera, labelRenderer.domElement );
+            controls.minDistance = 5;
+            controls.maxDistance = 100;
+             
+            // TEST IMPORT 
+
+
+            const plastic = new GLTFLoader();
+            const glass = new GLTFLoader();
+            const fatman = new GLTFLoader();
+
+            plastic.load( './assets/waterBottle/waterBottle.gltf', function ( gltf ) {
+                gltf.scene.scale.set(10, 10, 10)
+                scene.add( gltf.scene );
+
+            }, undefined, function ( error ) {
+
+                console.error( error );
+
+            } );
+
+            glass.load( './assets/glassBottle/glassBottle.gltf', function ( gltf ) {
+                gltf.scene.position.set( 0, 0, 3 );
+                gltf.scene.scale.set(0.001, 0.001, 0.001)
+                scene.add( gltf.scene );
+
+            }, undefined, function ( error ) {
+
+                console.error( error );
+
+            } );
+
+            fatman.load( './assets/fatman/fatman.gltf', function ( gltf ) {
+                gltf.scene.position.set( 1, 1, 3 );
+                gltf.scene.scale.set(0.4, 1, 1)
+                scene.add( gltf.scene );
+
+            }, undefined, function ( error ) {
+
+                console.error( error );
+
+            } );
         }
 
         function buildController( data ) {
