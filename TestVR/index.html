@@ -107,7 +107,7 @@
 
             // Défini le labyrinthe
             maze = new GLTFLoader();
-            maze.load("./assets/maze.gltf", function (gltf) {
+            maze.load("./assets/maze/maze.gltf", function (gltf) {
                 const model = gltf.scene;
                 gltf.scene.scale.set(2,2,2);
                 const box = new THREE.Box3().setFromObject( gltf.scene );
