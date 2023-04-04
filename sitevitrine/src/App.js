@@ -7,9 +7,9 @@ function App() {
   return (
     <div className="page w-full">
       <Header></Header>
-      <Hero></Hero>
-      <Gallery></Gallery>
-      <Video></Video>
+      <Hero ></Hero>
+      <Gallery ></Gallery>
+      <Video ></Video>
     </div>
   );
 }
