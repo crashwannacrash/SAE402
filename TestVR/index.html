@@ -371,7 +371,7 @@
             scene.add( plastique );
 
             // TEXTE
-            createText('1000° C', - 25, 10, -20, 0, - 30.5);
+            createText('1000° C', - 25, 10, -20, 0, 0.25);
 
             // Verre
             const verre = new THREE.Mesh( forme, materialVerre );
@@ -381,7 +381,7 @@
             scene.add( verre );
 
             // TEXTE
-            createText('2000° C', 21, 10, 20, 0, 29);
+            createText('2000° C', 21, 10, 20, 0, 1.25);
 
             // Métaux
             const metaux = new THREE.Mesh( forme, materialMetaux );
@@ -391,7 +391,7 @@
             scene.add( metaux );
 
             // TEXTE
-            createText('3000° C', 17, 10, - 21.5, 0, - .75);
+            createText('3000° C', 17, 10, - 21.5, 0, 1.75);
 
             // Cartons
             const cartons = new THREE.Mesh( forme, materialCartons );
@@ -401,7 +401,7 @@
             scene.add( cartons );
             
             // TEXTE
-            createText('4000° C', - 23, 10, 23, 0, 21.25);
+            createText('4000° C', - 23, 10, 23, 0, 0.75);
             
         }
 
@@ -522,7 +522,7 @@
                 textMesh1.position.z = z;
 
                 textMesh1.rotation.x = rotationX;
-                textMesh1.rotation.y = rotationY; // Math.PI * 2 par defaut
+                textMesh1.rotation.y = Math.PI * rotationY; // Math.PI * 2 par defaut
 
                 scene.add( textMesh1 );
 
