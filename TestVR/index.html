@@ -70,8 +70,8 @@
 
             createTowers();
 
-            // createProps(); +
-            createText('labyrinth', 0, 0, 5);         
+            // createProps(); 
+            createText('labyrinth', 0, 0, 5, 0, 0);         
         }     
 
         function render() {
@@ -310,9 +310,9 @@
         function createLabyrinth() {
             // Défini le labyrinthe
             maze = new GLTFLoader();
-            maze.load("./assets/maze/maze.gltf", function (gltf) {
+            maze.load("./assets/maze/maze3.gltf", function (gltf) {
                 const model = gltf.scene;
-                gltf.scene.scale.set(2,1,2);
+                gltf.scene.scale.set(1,1,1);
                 
                 // const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                 // model.traverse(function(child) {
@@ -532,6 +532,9 @@
                 console.log(position.setFromMatrixPosition(camera.matrixWorld));
             })
         };
+
+        // ajouter des sons (téléportation, 8 bits)
+        // 
 
     </script>
     
