@@ -170,7 +170,7 @@
         function createCamera() {
             // Défini les caméras
             camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 2000 );
-            camera.position.set( 0, 5, 20 );
+            camera.position.set( 0, 40, 100 );
             camera.lookAt(new THREE.Vector3(0,0,0));
         }
 
@@ -369,24 +369,39 @@
             plastique.position.y = - 5 
             plastique.position.z = - 25
             scene.add( plastique );
+
+            // TEXTE
+            createText('1000° C', - 25, 10, -20, 0, - 30.5);
+
             // Verre
             const verre = new THREE.Mesh( forme, materialVerre );
             verre.position.x = 26 
             verre.position.y = - 5
             verre.position.z = 25
             scene.add( verre );
+
+            // TEXTE
+            createText('2000° C', 21, 10, 20, 0, 29);
+
             // Métaux
             const metaux = new THREE.Mesh( forme, materialMetaux );
             metaux.position.x = 26 
             metaux.position.y = - 5
             metaux.position.z = - 25
             scene.add( metaux );
+
+            // TEXTE
+            createText('3000° C', 17, 10, - 21.5, 0, - .75);
+
             // Cartons
             const cartons = new THREE.Mesh( forme, materialCartons );
             cartons.position.x = - 26 
             cartons.position.y = - 5
             cartons.position.z = 25
             scene.add( cartons );
+            
+            // TEXTE
+            createText('4000° C', - 23, 10, 23, 0, 21.25);
             
         }
 
@@ -472,7 +487,7 @@
             } );
         }
 
-        function createText(message, x, y, z) {
+        function createText(message, x, y, z, rotationX, rotationY) {
 
             const loader = new FontLoader();
 
@@ -498,16 +513,16 @@
 
                 } );
 
-                // textGeo.computeBoundingBox();
-                // const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+                textGeo.computeBoundingBox();
+                const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 
                 const textMesh1 = new THREE.Mesh( textGeo, materials);
-                textMesh1.position.x = 0;
-                textMesh1.position.y = 5;
-                textMesh1.position.z = 10;
+                textMesh1.position.x = x - centerOffset;
+                textMesh1.position.y = y;
+                textMesh1.position.z = z;
 
-                // textMesh1.rotation.x = 0;
-                // textMesh1.rotation.y = Math.PI * 2;
+                textMesh1.rotation.x = rotationX;
+                textMesh1.rotation.y = rotationY; // Math.PI * 2 par defaut
 
                 scene.add( textMesh1 );
 
@@ -517,11 +532,6 @@
                 console.log(position.setFromMatrixPosition(camera.matrixWorld));
             })
         };
-            
-
-        // function refreshText() {
-        //     createText();
-        // } 
 
     </script>
     
