@@ -83,9 +83,9 @@
                 raycaster.ray.origin.setFromMatrixPosition( controller1.matrixWorld );
 				raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-                const intersects = raycaster.intersectObjects( [ floor ] );
-                // const intersects = raycaster.intersectObjects( maze, true );
+                const intersects = raycaster.intersectObjects( [ scene ] );
                 if ( intersects.length > 0 ) {
+                    console.dir(intersects)
                     INTERSECTION = intersects[ 0 ].point;
                 }
 
