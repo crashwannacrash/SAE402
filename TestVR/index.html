@@ -45,6 +45,10 @@
 
         let font, textGeo;
 
+        let plastic, wood, organic, metal;
+        let junk;
+        
+
         let INTERSECTION;
         const tempMatrix = new THREE.Matrix4();
 
@@ -70,8 +74,9 @@
 
             createTowers();
 
-            // createProps(); 
-            createText('labyrinth', 0, 0, 5, 0, 0);         
+            createProps(); 
+            createText('labyrinth', 0, 0, 5, 0, 0);        
+           
         }     
 
         function render() {
@@ -229,6 +234,7 @@
                         const transform = new XRRigidTransform( offsetPosition, offsetRotation );
                         const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace( transform );
                         renderer.xr.setReferenceSpace( teleportSpaceOffset );
+                        playSound('assets/teleportSound/Appear_Electric 01.wav'); 
                     }
             }
 
@@ -407,80 +413,147 @@
 
         function createProps() {
             // Ajouts props (test)
-            const femme1 = new GLTFLoader();
-            femme1.load("./assets/femme.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(2,2,2);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                glb.scene.rotateY(-190)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 2;
-                glb.scene.position.y = - 7.3;
-                glb.scene.position.z += ( glb.scene.position.z - center.z );
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const femme1 = new GLTFLoader();
+            // femme1.load("./assets/femme.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(2,2,2);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     glb.scene.rotateY(-190)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) - 2;
+            //     glb.scene.position.y = - 7.3;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z );
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
 
-            const femme2 = new GLTFLoader();
-            femme2.load("./assets/femme.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(2,2,2);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                glb.scene.rotateY(190)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) + 2;
-                glb.scene.position.y = - 7.3;
-                glb.scene.position.z += ( glb.scene.position.z - center.z );
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const femme2 = new GLTFLoader();
+            // femme2.load("./assets/femme.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(2,2,2);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     glb.scene.rotateY(190)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) + 2;
+            //     glb.scene.position.y = - 7.3;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z );
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
 
-            const pomplar = new GLTFLoader();
-            pomplar.load("./assets/pomplar.glb", function (glb) {
+            // const pomplar = new GLTFLoader();
+            // pomplar.load("./assets/pomplar.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(0.8,0.8,0.8);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
+            //     glb.scene.position.y = - 6;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
+
+            // const poubelles1 = new GLTFLoader();
+            // poubelles1.load("./assets/poubelles.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(9,9,9);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
+            //     glb.scene.position.y = - 7;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 40;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
+            // const poubelles2 = new GLTFLoader();
+            // poubelles2.load("./assets/poubelles.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(9,9,9);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     glb.scene.rotateY(15.71)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
+            //     glb.scene.position.y = - 7;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) + 40;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
+
+            const plasticBottle = new GLTFLoader();
+            plasticBottle.load("./assets/bottle.glb", function (glb) {
                 const model = glb.scene;
-                glb.scene.scale.set(0.8,0.8,0.8);
+                glb.scene.scale.set(0.01,0.01,0.01);
                 // CENTRER L'OBJET A PARTIR DU MILIEU
                 // glb.scene.rotateY(380)
                 const box = new THREE.Box3().setFromObject( glb.scene );
                 const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x );
-                glb.scene.position.y = - 6;
+                glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
+                glb.scene.position.y = -7;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+
+            const wood = new GLTFLoader();
+            wood.load("./assets/wood.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(0.01,0.01,0.01);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
+                glb.scene.position.y = - 7;
                 glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
                 scene.add(model);
             }, undefined, function ( error ) {
                 console.error( error );
             } );
 
-            const poubelles1 = new GLTFLoader();
-            poubelles1.load("./assets/poubelles.glb", function (glb) {
+
+            const colaCan = new GLTFLoader();
+            colaCan.load("./assets/colaCan.glb", function (glb) {
                 const model = glb.scene;
-                glb.scene.scale.set(9,9,9);
+                glb.scene.scale.set(0.1,0.1,0.1);
                 // CENTRER L'OBJET A PARTIR DU MILIEU
                 // glb.scene.rotateY(380)
                 const box = new THREE.Box3().setFromObject( glb.scene );
                 const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x );
-                glb.scene.position.y = - 7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 40;
+                glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
+                glb.scene.position.y = - 6.75;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
                 scene.add(model);
             }, undefined, function ( error ) {
                 console.error( error );
             } );
-            const poubelles2 = new GLTFLoader();
-            poubelles2.load("./assets/poubelles.glb", function (glb) {
+
+
+            const banana = new GLTFLoader();
+            banana.load("./assets/banana.glb", function (glb) {
                 const model = glb.scene;
-                glb.scene.scale.set(9,9,9);
+                glb.scene.scale.set(100,100,100);
                 // CENTRER L'OBJET A PARTIR DU MILIEU
-                glb.scene.rotateY(15.71)
+                // glb.scene.rotateY(380)
                 const box = new THREE.Box3().setFromObject( glb.scene );
                 const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x );
-                glb.scene.position.y = - 7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) + 40;
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
+                glb.scene.position.y = -6.5;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
                 scene.add(model);
             }, undefined, function ( error ) {
                 console.error( error );
@@ -529,13 +602,48 @@
                 const position = new THREE.Vector3();
 
                 position.setFromMatrixPosition(camera.matrixWorld); // donne la position de la caméra
-                console.log(position.setFromMatrixPosition(camera.matrixWorld));
+
             })
         };
 
-        // ajouter des sons (téléportation, 8 bits)
-        // 
+        function playSound(url){
+            const audioListener = new THREE.AudioListener();
 
+            // add the listener to the camera
+            camera.add( audioListener );
+
+            // instantiate audio object
+            const oceanAmbientSound = new THREE.Audio( audioListener );
+
+            // add the audio object to the scene
+            scene.add( oceanAmbientSound );
+
+            const loader = new THREE.AudioLoader();
+
+            loader.load(
+                // resource URL
+                url,
+
+                // onLoad callback
+                function ( audioBuffer ) {
+                    // set the audio object buffer to the loaded object
+                    oceanAmbientSound.setBuffer( audioBuffer );
+
+                    // play the audio
+                    oceanAmbientSound.play();
+                },
+
+                // onProgress callback
+                function ( xhr ) {
+                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                },
+
+                // onError callback
+                function ( err ) {
+                    console.log( 'An error happened' );
+            }
+            );
+        }
     </script>
     
 </body>
