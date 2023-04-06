@@ -110,12 +110,12 @@
             if ( controller2.userData.isSelecting === true ) {
                 tempMatrix.identity().extractRotation( controller2.matrixWorld );
 
-                raycasterOne.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
-				raycasterOne.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+                raycasterTwo.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
+				raycasterTwo.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-                const intersects = raycasterOne.intersectObjects( scene.children );
+                const intersects = raycasterTwo.intersectObjects( scene.children );
                 // const intersects = raycaster.intersectObjects( maze, true );
-                if ( intersects.length > 0 && scene.children.Object.object.name == "cube" ) {
+                if ( intersects.length > 0 ) {
                     INTERACTION = intersects[ 0 ].point;
                 }
 

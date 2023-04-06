@@ -42,7 +42,7 @@ const ImageGrid = () => {
 
   const [activeImageId, setActiveImageId] = useState(null);
   return (
-    <div className="container mx-auto py-12 ">
+    <div className="container mx-auto py-12">
         <div className="grid grid-cols-3 gap-8">
             {images.map((image) => (
             <div
@@ -53,8 +53,8 @@ const ImageGrid = () => {
             >
                 <img src={image.src} alt={image.alt} className="w-full h-auto transition-all" />
                 {activeImageId === image.id && (
-                <div className="absolute bottom-0 left-0 h-full w-full p-4 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-                    <p className='font-bold md:text-lg text-center text-white'>{image.description}</p>
+                <div className="absolute bottom-0 left-0 h-full w-full p-4 bg-green-700 bg-opacity-75 flex items-center justify-center">
+                    <p className='font-extrabold md:text-lg text-center text-white'>{image.description}</p>
                 </div>
                 )}
             </div>
