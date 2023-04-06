@@ -33,7 +33,7 @@
         import { FontLoader } from 'three/addons/loaders/FontLoader.js';
         import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-        let camera, scene, renderer, raycasterOne, raycasterTwo, labelRenderer;
+        let camera, scene, renderer, raycasterOne, raycasterTwo, labelRenderer, group;
         let hand1, hand2;
         let controller1, controller2;
         let controllerGrip1, controllerGrip2;
@@ -52,7 +52,6 @@
         
 
         let INTERSECTION;
-        let INTERACTION;
         const tempMatrix = new THREE.Matrix4();
 
         init();
@@ -70,22 +69,23 @@
             createMouseControls();
             createVRControls();
             createMarker();
-            createBaseStart();
 
             createLabyrinth();
             createLabyrinthFloor();
 
             createTowers();
 
-            createCube();
+            createCollectables();
 
             createProps(); 
-            createText('labyrinth', 0, 0, 5, 0, 0);         
+            createText('labyrinth', 0, 0, 5, 0, 0);    
+            
         }
 
         function render() {
             INTERSECTION = undefined;
-            INTERACTION = undefined;
+
+            // intersectObjects( controller2 );
 
             function updateSelectedObjectPositionAndOrientation( controller ) {
                 controller.userData.selectedObject.position.copy( controller.position );
@@ -107,31 +107,26 @@
 
             }
 
-            if ( controller2.userData.isSelecting === true ) {
-                tempMatrix.identity().extractRotation( controller2.matrixWorld );
+            // if ( controller2.userData.isSelecting === true ) {
+            //     tempMatrix.identity().extractRotation( controller2.matrixWorld );
 
-                raycasterTwo.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
-				raycasterTwo.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+            //     raycasterTwo.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
+			// 	raycasterTwo.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
 
-                const intersects = raycasterTwo.intersectObjects( scene.children );
-                // const intersects = raycaster.intersectObjects( maze, true );
-                if ( intersects.length > 0 ) {
-                    INTERACTION = intersects[ 0 ].point;
-                }
+            //     const intersects = raycasterTwo.intersectObjects( scene.children );
+            //     // const intersects = raycaster.intersectObjects( maze, true );
+            //     if ( intersects.length > 0 ) {
+            //         INTERACTION = intersects[ 0 ].point;
+            //     }
 
-            }
+            // }
 
             // if ( controller2.userData.selectedObject ) {
             //     updateSelectedObjectPositionAndOrientation( controller2 );
             // }
-            
 
             if ( INTERSECTION ){
                 marker.position.copy( INTERSECTION );
-            }
-
-            if ( INTERACTION ){
-                scene.remove(controller2.userData.selectedObject.Object.object.name)
             }
 
             marker.visible = INTERSECTION !== undefined;
@@ -249,27 +244,67 @@
             raycasterOne = new THREE.Raycaster();
             raycasterTwo = new THREE.Raycaster();
 
+            function getIntersections( controller ) {
+
+                tempMatrix.identity().extractRotation( controller.matrixWorld );
+
+                raycasterTwo.ray.origin.setFromMatrixPosition( controller.matrixWorld );
+                raycasterTwo.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
+
+                return raycasterTwo.intersectObjects( group.children, false );
+
+            }
+
+            function intersectObjects( controller ) {
+
+                // Do not highlight when already selected
+
+                if ( controller.userData.selected !== undefined ) return;
+
+                    const line = controller.getObjectByName( 'line' );
+                    const intersections = getIntersections( controller );
+
+                    if ( intersections.length > 0 ) {
+
+                        const intersection = intersections[ 0 ];
+
+                        const object = intersection.object;
+                        object.material.emissive.r = 1;
+                        intersected.push( object );
+
+                        line.scale.z = intersection.distance;
+
+                    } else {
+
+                    line.scale.z = 5;
+
+                }
+
+            }
+
             // CONTROLLERS
             function onSelectStartOne() {
                 this.userData.isSelecting = true;
             }
 
-            function onSelectStartTwo() {
+            function onSelectStartTwo( event ) {
                 this.userData.isSelecting = true;
-            }
 
-            // function onSelectStartTwo( event ) {
-            //     var controller = event.target;
-            //     var intersectedObject = getIntersectedObject( controller );
-            //     if ( intersectedObject && !intersectedObject.userData.isGrabbed ) {
-            //         intersectedObject.userData.isGrabbed = true;
-            //         intersectedObject.userData.positionBeforeGrab = intersectedObject.position.clone();
-            //         intersectedObject.userData.rotationBeforeGrab = intersectedObject.rotation.clone();
-            //         controller.userData.selectedObject = intersectedObject;
-            //         controller.userData.offset = intersectedObject.position.clone().sub( controller.position );
-            //         scene.add( intersectedObject );
-            //     }
-            // }
+                const controller = event.target;
+
+				const intersections = getIntersections( controller );
+
+				if ( intersections.length > 0 ) {
+
+					const intersection = intersections[ 0 ];
+
+					const object = intersection.object;
+                    scene.remove(object)
+                    group.remove(object)
+					controller.userData.selected = object;
+
+				}
+            }
 
             function onSelectEndOne() {
                 this.userData.isSelecting = false;
@@ -283,45 +318,23 @@
                 }
             }
 
-            function onSelectEndTwo() {
+            function onSelectEndTwo(event) {
                 this.userData.isSelecting = false;
-                // if ( INTERSECTION ) {
-                //     const offsetPosition = { x: - INTERSECTION.x, y: - INTERSECTION.y, z: - INTERSECTION.z, w: 1 };
-                //     const offsetRotation = new THREE.Quaternion();
-                //     const transform = new XRRigidTransform( offsetPosition, offsetRotation );
-                //     const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace( transform );
-                //     renderer.xr.setReferenceSpace( teleportSpaceOffset );
-                // }
+
+                const controller = event.target;
+
+				if ( controller.userData.selected !== undefined ) {
+
+					const object = controller.userData.selected;
+                    inventory.push(object.name);
+                    scene.remove(object);
+                    group.remove(object)
+					controller.userData.selected = undefined;
+
+                    console.log(inventory)
+
+				}
             }
-
-            // function onSelectEndTwo( event ) {
-            //     var controller = event.target;
-            //     var selectedObject = controller.userData.selectedObject;
-            //     if ( selectedObject ) {
-            //         selectedObject.userData.isGrabbed = false;
-            //         controller.userData.selectedObject = null;
-
-            //         // Si l'objet a été relâché dans l'inventaire, il disparaît de la scène et est ajouté à l'inventaire
-            //         if (controller.userData.inInventory) {
-            //         selectedObject.visible = false;
-            //         inventory.push(selectedObject);
-            //         }
-            //     }
-            // }
-            
-            // function getIntersectedObject( controller ) {
-            //     raycasterTwo.ray.origin.setFromMatrixPosition( controller2.matrixWorld );
-			// 	raycasterTwo.ray.direction.set( 0, 0, 0 ).applyMatrix4( tempMatrix );
-            //     var intersects = raycasterTwo.intersectObjects( scene.children );
-            //     for ( var i = 0; i < intersects.length; i++ ) {
-            //         var intersected
-            //         var object = intersects[i].object;
-            //         if ( object.userData && !object.userData.isGrabbed ) {
-            //         return object;
-            //         }
-            //     }
-            //     return null;
-            // }
 
             controller1 = renderer.xr.getController( 0 );
             controller1.addEventListener( 'selectstart', onSelectStartOne );
@@ -388,16 +401,6 @@
             scene.add( marker );
         }
 
-        function createBaseStart() {
-            // Défini la zone de départ
-            baseStart = new THREE.Mesh(
-                new THREE.PlaneGeometry( 2, 2, 1, 1 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0x008000} )    
-            )
-            baseStart.position.y = -6.99;
-            scene.add(baseStart)
-        }
-
         function createLabyrinth() {
             // Défini le labyrinthe
             maze = new GLTFLoader();
@@ -449,11 +452,29 @@
 
         function createTowers() {
             // TOURS 
+            let materialVerre = undefined
+            let materialMetaux = undefined
+            let materialCartons = undefined
+            let materialPlastique = undefined
+
             const forme = new THREE.BoxGeometry( 3, 20, 3 ).translate(0, 8, 0);
-            const materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
-            const materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
-            const materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
-            const materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
+            if (inventory.length === 0) {
+                const materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
+                const materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
+                const materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
+                const materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
+            }
+            else if (inventory.length !== 0) {
+                for (const objs of inventory) {
+                    if (objs.name == "cube") {
+                        const materialVerre = new THREE.MeshBasicMaterial( {color: 0xff0000} ); 
+                    }
+
+                    else if (objs.name == "cube2") {
+                        const materialVerre = new THREE.MeshBasicMaterial( {color: 0xfff000} ); 
+                    }
+                }
+            }
             // Plastique
             const plastique = new THREE.Mesh( forme, materialPlastique );
             plastique.position.x = - 26 
@@ -691,14 +712,26 @@
             })
         };
         
-        function createCube(){
+        function createCollectables(){
+            group = new THREE.Group();
+			scene.add( group );
+
             var cubeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
             var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
             var cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
             cube.position.set( 0, -5, -2 );
             cube.userData.isGrabbed = false;
-            cube.name ="cube"
-            scene.add( cube );
+            cube.userData.id = 'cube1';
+            cube.name ="cube";
+            group.add( cube )
+
+            var cube2 = new THREE.Mesh( cubeGeometry, cubeMaterial );
+            cube2.position.set( 0, -5, 2 );
+            cube2.userData.isGrabbed = false;
+            cube2.userData.id = 'cube2';
+            cube2.name ="cube2";
+            group.add( cube2 )
+            //group.add(wood)
         }
         // ajouter des sons (téléportation, 8 bits)
         // 
