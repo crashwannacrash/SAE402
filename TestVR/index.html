@@ -78,7 +78,7 @@
             createCollectables();
 
             createProps(); 
-            createText('labyrinth', 0, 0, 5, 0, 0);    
+            // createText('labyrinth', 0, 0, 5, 0, 0);    
             
         }
 
@@ -299,8 +299,8 @@
 					const intersection = intersections[ 0 ];
 
 					const object = intersection.object;
-                    scene.remove(object)
-                    group.remove(object)
+                    scene.remove(object);
+                    group.remove(object);
 					controller.userData.selected = object;
 
 				}
@@ -328,9 +328,9 @@
 					const object = controller.userData.selected;
                     inventory.push(object.name);
                     scene.remove(object);
-                    group.remove(object)
+                    group.remove(object);
 					controller.userData.selected = undefined;
-
+                    createTowers();
                     console.log(inventory)
 
 				}
@@ -456,64 +456,109 @@
             let materialMetaux = undefined
             let materialCartons = undefined
             let materialPlastique = undefined
+            let plastique = undefined
+            let verre = undefined
+            let metaux = undefined
+            let cartons = undefined
 
             const forme = new THREE.BoxGeometry( 3, 20, 3 ).translate(0, 8, 0);
             if (inventory.length === 0) {
-                const materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
-                const materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
-                const materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
-                const materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
+                // materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
+                // materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
+                // materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
+                // materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
             }
             else if (inventory.length !== 0) {
                 for (const objs of inventory) {
-                    if (objs.name == "cube") {
-                        const materialVerre = new THREE.MeshBasicMaterial( {color: 0xff0000} ); 
-                    }
+                    if (objs == "plastique") {
+                        materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} ); 
+                        // Plastique
+                        plastique = new THREE.Mesh( forme, materialPlastique );
+                        plastique.position.x = - 26 
+                        plastique.position.y = - 5 
+                        plastique.position.z = - 25
+                        scene.add( plastique );
 
-                    else if (objs.name == "cube2") {
-                        const materialVerre = new THREE.MeshBasicMaterial( {color: 0xfff000} ); 
+                        // TEXTE
+                        createText('Plastique', - 25, 10, -20, 0, 0.25);
+                    }
+                    else if (objs == "verre") {
+                        materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
+                        // Verre
+                        const verre = new THREE.Mesh( forme, materialVerre );
+                        verre.position.x = 26 
+                        verre.position.y = - 5
+                        verre.position.z = 25
+                        scene.add( verre );
+
+                        // TEXTE
+                        createText('Verre', 21, 10, 20, 0, 1.25);
+                    }
+                    else if (objs == "metaux") {
+                        materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
+                        // Métaux
+                        const metaux = new THREE.Mesh( forme, materialMetaux );
+                        metaux.position.x = 26 
+                        metaux.position.y = - 5
+                        metaux.position.z = - 25
+                        scene.add( metaux );
+
+                        // TEXTE
+                        createText('Métaux', 17, 10, - 21.5, 0, 1.75);
+                    }
+                    else if (objs == "cartons") {
+                        materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
+                        // Cartons
+                        const cartons = new THREE.Mesh( forme, materialCartons );
+                        cartons.position.x = - 26 
+                        cartons.position.y = - 5
+                        cartons.position.z = 25
+                        scene.add( cartons );
+                        
+                        // TEXTE
+                        createText('Cartons', - 23, 10, 23, 0, 0.75);
                     }
                 }
             }
-            // Plastique
-            const plastique = new THREE.Mesh( forme, materialPlastique );
-            plastique.position.x = - 26 
-            plastique.position.y = - 5 
-            plastique.position.z = - 25
-            scene.add( plastique );
+            // // Plastique
+            // const plastique = new THREE.Mesh( forme, materialPlastique );
+            // plastique.position.x = - 26 
+            // plastique.position.y = - 5 
+            // plastique.position.z = - 25
+            // scene.add( plastique );
 
-            // TEXTE
-            createText('1000° C', - 25, 10, -20, 0, 0.25);
+            // // TEXTE
+            // createText('1000° C', - 25, 10, -20, 0, 0.25);
 
-            // Verre
-            const verre = new THREE.Mesh( forme, materialVerre );
-            verre.position.x = 26 
-            verre.position.y = - 5
-            verre.position.z = 25
-            scene.add( verre );
+            // // Verre
+            // const verre = new THREE.Mesh( forme, materialVerre );
+            // verre.position.x = 26 
+            // verre.position.y = - 5
+            // verre.position.z = 25
+            // scene.add( verre );
 
-            // TEXTE
-            createText('2000° C', 21, 10, 20, 0, 1.25);
+            // // TEXTE
+            // createText('2000° C', 21, 10, 20, 0, 1.25);
 
-            // Métaux
-            const metaux = new THREE.Mesh( forme, materialMetaux );
-            metaux.position.x = 26 
-            metaux.position.y = - 5
-            metaux.position.z = - 25
-            scene.add( metaux );
+            // // Métaux
+            // const metaux = new THREE.Mesh( forme, materialMetaux );
+            // metaux.position.x = 26 
+            // metaux.position.y = - 5
+            // metaux.position.z = - 25
+            // scene.add( metaux );
 
-            // TEXTE
-            createText('3000° C', 17, 10, - 21.5, 0, 1.75);
+            // // TEXTE
+            // createText('3000° C', 17, 10, - 21.5, 0, 1.75);
 
-            // Cartons
-            const cartons = new THREE.Mesh( forme, materialCartons );
-            cartons.position.x = - 26 
-            cartons.position.y = - 5
-            cartons.position.z = 25
-            scene.add( cartons );
+            // // Cartons
+            // const cartons = new THREE.Mesh( forme, materialCartons );
+            // cartons.position.x = - 26 
+            // cartons.position.y = - 5
+            // cartons.position.z = 25
+            // scene.add( cartons );
             
-            // TEXTE
-            createText('4000° C', - 23, 10, 23, 0, 0.75);
+            // // TEXTE
+            // createText('4000° C', - 23, 10, 23, 0, 0.75);
             
         }
 
@@ -598,72 +643,72 @@
             //     console.error( error );
             // } );
 
-            const plasticBottle = new GLTFLoader();
-            plasticBottle.load("./assets/bottle.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.01,0.01,0.01);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
-                glb.scene.position.y = -7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const plasticBottle = new GLTFLoader();
+            // plasticBottle.load("./assets/bottle.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(0.01,0.01,0.01);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
+            //     glb.scene.position.y = -7;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
 
 
-            const wood = new GLTFLoader();
-            wood.load("./assets/wood.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.01,0.01,0.01);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
-                glb.scene.position.y = - 7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const wood = new GLTFLoader();
+            // wood.load("./assets/wood.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(0.01,0.01,0.01);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
+            //     glb.scene.position.y = - 7;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
 
 
-            const colaCan = new GLTFLoader();
-            colaCan.load("./assets/colaCan.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.1,0.1,0.1);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
-                glb.scene.position.y = - 6.75;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const colaCan = new GLTFLoader();
+            // colaCan.load("./assets/colaCan.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(0.1,0.1,0.1);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
+            //     glb.scene.position.y = - 6.75;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
 
 
-            const banana = new GLTFLoader();
-            banana.load("./assets/banana.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(100,100,100);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
-                glb.scene.position.y = -6.5;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
+            // const banana = new GLTFLoader();
+            // banana.load("./assets/banana.glb", function (glb) {
+            //     const model = glb.scene;
+            //     glb.scene.scale.set(100,100,100);
+            //     // CENTRER L'OBJET A PARTIR DU MILIEU
+            //     // glb.scene.rotateY(380)
+            //     const box = new THREE.Box3().setFromObject( glb.scene );
+            //     const center = box.getCenter( new THREE.Vector3() );
+            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
+            //     glb.scene.position.y = -6.5;
+            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
+            //     scene.add(model);
+            // }, undefined, function ( error ) {
+            //     console.error( error );
+            // } );
         }
 
         function createText(message, x, y, z, rotationX, rotationY) {
@@ -718,20 +763,34 @@
 
             var cubeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
             var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
-            var cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cube.position.set( 0, -5, -2 );
-            cube.userData.isGrabbed = false;
-            cube.userData.id = 'cube1';
-            cube.name ="cube";
-            group.add( cube )
 
-            var cube2 = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cube2.position.set( 0, -5, 2 );
-            cube2.userData.isGrabbed = false;
-            cube2.userData.id = 'cube2';
-            cube2.name ="cube2";
-            group.add( cube2 )
-            //group.add(wood)
+            var cubePlastique = new THREE.Mesh( cubeGeometry, cubeMaterial );
+            cubePlastique.position.set( 0, -5, -2 );
+            cubePlastique.userData.isGrabbed = false;
+            cubePlastique.userData.id = 'cubePlastique';
+            cubePlastique.name ="plastique";
+            group.add( cubePlastique )
+
+            var cubeVerre = new THREE.Mesh( cubeGeometry, cubeMaterial );
+            cubeVerre.position.set( 0, -5, 2 );
+            cubeVerre.userData.isGrabbed = false;
+            cubeVerre.userData.id = 'cubeVerre';
+            cubeVerre.name ="verre";
+            group.add( cubeVerre )
+
+            var cubeCartons = new THREE.Mesh( cubeGeometry, cubeMaterial );
+            cubeCartons.position.set( -2, -5, 0 );
+            cubeCartons.userData.isGrabbed = false;
+            cubeCartons.userData.id = 'cubeCartons';
+            cubeCartons.name ="cartons";
+            group.add( cubeCartons )
+
+            var cubeMetaux = new THREE.Mesh( cubeGeometry, cubeMaterial );
+            cubeMetaux.position.set( 2, -5, 0 );
+            cubeMetaux.userData.isGrabbed = false;
+            cubeMetaux.userData.id = 'cubeMetaux';
+            cubeMetaux.name ="metaux";
+            group.add( cubeMetaux )
         }
         // ajouter des sons (téléportation, 8 bits)
         // 
