@@ -78,7 +78,8 @@
             createCollectables();
 
             createProps(); 
-            // createText('labyrinth', 0, 0, 5, 0, 0);    
+            startText();
+            // playSound('./assets/bgNoise.mp3')
             
         }
 
@@ -441,10 +442,11 @@
         }
 
         function createLabyrinthFloor() {
-            // Défini le sol du labyrinthe
+            const floorTexture = new THREE.TextureLoader().load( 'assets/floor.jpg' )
             floor = new THREE.Mesh(
                 new THREE.PlaneGeometry( roomSize + 1, roomSize, 2, 2 ).rotateX( - Math.PI / 2 ),
-                new THREE.MeshBasicMaterial( { color: 0x4650db } )
+                new THREE.MeshBasicMaterial( { map: floorTexture } ),
+                
             );
             floor.position.y = -7;
             scene.add( floor );
@@ -563,152 +565,138 @@
         }
 
         function createProps() {
-            // Ajouts props (test)
-            // const femme1 = new GLTFLoader();
-            // femme1.load("./assets/femme.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(2,2,2);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     glb.scene.rotateY(-190)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) - 2;
-            //     glb.scene.position.y = - 7.3;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z );
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
-
-            // const femme2 = new GLTFLoader();
-            // femme2.load("./assets/femme.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(2,2,2);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     glb.scene.rotateY(190)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) + 2;
-            //     glb.scene.position.y = - 7.3;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z );
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
-
-            // const pomplar = new GLTFLoader();
-            // pomplar.load("./assets/pomplar.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(0.8,0.8,0.8);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
-            //     glb.scene.position.y = - 6;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
-
-            // const poubelles1 = new GLTFLoader();
-            // poubelles1.load("./assets/poubelles.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(9,9,9);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
-            //     glb.scene.position.y = - 7;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 40;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
-            // const poubelles2 = new GLTFLoader();
-            // poubelles2.load("./assets/poubelles.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(9,9,9);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     glb.scene.rotateY(15.71)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x );
-            //     glb.scene.position.y = - 7;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) + 40;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
-
-            // const plasticBottle = new GLTFLoader();
-            // plasticBottle.load("./assets/bottle.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(0.01,0.01,0.01);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
-            //     glb.scene.position.y = -7;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
+            const plasticBottle = new GLTFLoader();
+            plasticBottle.load("./assets/bottle.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(0.01,0.01,0.01);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
+                glb.scene.position.y = -7;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
 
 
-            // const wood = new GLTFLoader();
-            // wood.load("./assets/wood.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(0.01,0.01,0.01);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
-            //     glb.scene.position.y = - 7;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
+            const wood = new GLTFLoader();
+            wood.load("./assets/wood.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(0.01,0.01,0.01);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
+                glb.scene.position.y = - 7;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
 
 
-            // const colaCan = new GLTFLoader();
-            // colaCan.load("./assets/colaCan.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(0.1,0.1,0.1);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
-            //     glb.scene.position.y = - 6.75;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
+            const colaCan = new GLTFLoader();
+            colaCan.load("./assets/colaCan.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(0.1,0.1,0.1);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
+                glb.scene.position.y = - 6.75;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
 
 
-            // const banana = new GLTFLoader();
-            // banana.load("./assets/banana.glb", function (glb) {
-            //     const model = glb.scene;
-            //     glb.scene.scale.set(100,100,100);
-            //     // CENTRER L'OBJET A PARTIR DU MILIEU
-            //     // glb.scene.rotateY(380)
-            //     const box = new THREE.Box3().setFromObject( glb.scene );
-            //     const center = box.getCenter( new THREE.Vector3() );
-            //     glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
-            //     glb.scene.position.y = -6.5;
-            //     glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
-            //     scene.add(model);
-            // }, undefined, function ( error ) {
-            //     console.error( error );
-            // } );
+            const banana = new GLTFLoader();
+            banana.load("./assets/banana.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(100,100,100);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
+                glb.scene.position.y = -6.5;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+            const plasticBin = new GLTFLoader();
+            plasticBin.load("./assets/benne.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(1,1,1);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) -21.5 ;
+                glb.scene.position.y = -6;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
+
+                glb.scene.rotation.y = 3.15;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+
+            const metalBin = new GLTFLoader();
+            metalBin.load("./assets/benne.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(1,1,1);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) + 21.5 ;
+                glb.scene.position.y = -6;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
+
+                glb.scene.rotation.y = 3.15;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+            const woodBin = new GLTFLoader();
+            woodBin.load("./assets/benne.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(1,1,1);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) -21.5 ;
+                glb.scene.position.y = -6;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 21;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
+            const organicBin = new GLTFLoader();
+            organicBin.load("./assets/benne.glb", function (glb) {
+                const model = glb.scene;
+                glb.scene.scale.set(1,1,1);
+                // CENTRER L'OBJET A PARTIR DU MILIEU
+                // glb.scene.rotateY(380)
+                const box = new THREE.Box3().setFromObject( glb.scene );
+                const center = box.getCenter( new THREE.Vector3() );
+                glb.scene.position.x += ( glb.scene.position.x - center.x ) + 21.5 ;
+                glb.scene.position.y = -6;
+                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 21;
+                scene.add(model);
+            }, undefined, function ( error ) {
+                console.error( error );
+            } );
         }
 
         function createText(message, x, y, z, rotationX, rotationY) {
@@ -794,7 +782,110 @@
         }
         // ajouter des sons (téléportation, 8 bits)
         // 
+        function startText() {
+            // createText('Start', -3, -6, -4, 0, 0)
+            const loader = new FontLoader();
 
+            loader.load( './node_modules/three/examples/fonts/helvetiker_regular.typeface.json', function ( response ) {
+                font = response;
+
+                let materials = [
+                    new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } )
+                ];
+
+                // let materials = [ new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } ) ];
+
+                textGeo = new TextGeometry( 'Teleport with your right hand controller', {
+
+                    font: font,
+                    size: 0.25,
+                    height: 0.5,
+                    // curveSegments: 5,
+                    // bevelThickness: 1,
+                    // bevelSize: 1.5,
+                    // bevelEnabled: false,
+
+                } );
+                textGeo.computeBoundingBox();
+                const centerOffset1 = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+                const textMesh1 = new THREE.Mesh( textGeo, materials);
+                textMesh1.position.x = centerOffset1 ;
+                textMesh1.position.y = -5;
+                textMesh1.position.z =  -4.5;
+
+                textMesh1.rotation.x = 0;
+                textMesh1.rotation.y = Math.PI * 0; // Math.PI * 2 par defaut
+
+                scene.add( textMesh1 );
+            })
+
+            loader.load( './node_modules/three/examples/fonts/helvetiker_regular.typeface.json', function ( response ) {
+                font = response;
+
+                let materials = [
+                    new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } )
+                ];
+
+                textGeo = new TextGeometry( 'Grab objects with your left hand controller', {
+
+                font: font,
+                size: 0.25,
+                height: 0.5,
+                // curveSegments: 5,
+                // bevelThickness: 1,
+                // bevelSize: 1.5,
+                // bevelEnabled: false,
+
+                } );
+
+                textGeo.computeBoundingBox();
+                const centerOffset2 = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+                const textMesh2 = new THREE.Mesh( textGeo, materials);
+                textMesh2.position.x = centerOffset2 - 0.75;
+                textMesh2.position.y = -5;
+                textMesh2.position.z =  +3;
+
+                textMesh2.rotation.x = 0;
+                textMesh2.rotation.y = Math.PI * 0.5; // Math.PI * 2 par defaut
+
+                scene.add( textMesh2 );
+            })
+
+            loader.load( './node_modules/three/examples/fonts/helvetiker_regular.typeface.json', function ( response ) {
+                font = response;
+
+                let materials = [
+                    new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } )
+                ];
+
+                textGeo = new TextGeometry( 'Try to find each piece of garbage and their dumpster', {
+
+                font: font,
+                size: 0.25,
+                height: 0.5,
+                // curveSegments: 5,
+                // bevelThickness: 1,
+                // bevelSize: 1.5,
+                // bevelEnabled: false,
+
+                } );
+
+                textGeo.computeBoundingBox();
+                const centerOffset2 = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+                const textMesh2 = new THREE.Mesh( textGeo, materials);
+                textMesh2.position.x = centerOffset2 + 7.75;
+                textMesh2.position.y = -5;
+                textMesh2.position.z =  -3;
+
+                textMesh2.rotation.x = 0;
+                textMesh2.rotation.y = Math.PI * -0.5; // Math.PI * 2 par defaut
+
+                scene.add( textMesh2 );
+            })
+        };
 
         function playSound(url){
             const audioListener = new THREE.AudioListener();
