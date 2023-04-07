@@ -5,9 +5,8 @@ const Header = () => {
         <h1 className="text-lg font-bold">SAE402</h1>
         <nav>
           <ul className="flex space-x-4">
-            <li><a href="#play" className="hover:text-gray-300">Jouer</a></li>
-            <li><a href="#gallery" className="hover:text-gray-300">Gallerie</a></li>
-            <li><a href="#infos" className="hover:text-gray-300">Informations</a></li>
+            <li><a href="https://mmi.unilim.fr/~lefetz1/SAE402/RenduFinal/index.html" className="hover:text-gray-300">Jouer</a></li>
+            <li><a href="https://mmi.unilim.fr/~lefetz1/SAE402/assets/" className="hover:text-gray-300">Assets</a></li>
           </ul>
         </nav>
       </div>
