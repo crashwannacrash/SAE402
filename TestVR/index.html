@@ -79,7 +79,7 @@
 
             createProps(); 
             startText();
-            // playSound('./assets/bgNoise.mp3')
+            playSound('./assets/sounds/bgNoise.mp3')
             
         }
 
@@ -316,7 +316,7 @@
                     const transform = new XRRigidTransform( offsetPosition, offsetRotation );
                     const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace( transform );
                     renderer.xr.setReferenceSpace( teleportSpaceOffset );
-                    playSound('assets/teleportSound/Appear_Electric 01.wav');
+                    playSound('./assets/sounds/Appear_Electric 01.wav');
                 }
             }
 
@@ -504,6 +504,7 @@
                     plastique.position.y = - 5 
                     plastique.position.z = - 25
                     scene.add( plastique );
+                    playSound('./assets/sounds/Move_Rubber 08.wav')
 
                     // TEXTE
                     createText('Plastic 50%', - 25, 5, -20, 0, 0.25);    
@@ -516,6 +517,8 @@
                     plastique.position.y = - 5 
                     plastique.position.z = - 25
                     scene.add( plastique );
+                    playSound('./assets/sounds/Move_Rubber 08.wav')
+                    playSound('./assets/sounds/Validate 01.wav')
 
                     // TEXTE
                     createText('Plastic 100%', - 25, 10, -20, 0, 0.25);    
@@ -529,7 +532,7 @@
                     metaux.position.y = - 5
                     metaux.position.z = - 25
                     scene.add( metaux );
-
+                    playSound('./assets/sounds/Transform_Metal 04.wav')
                     // TEXTE
                     createText('Metal 50%', 17, 5, - 21.5, 0, 1.75);   
                 }
@@ -541,7 +544,9 @@
                     metaux.position.y = - 5
                     metaux.position.z = - 25
                     scene.add( metaux );
-
+                    
+                    playSound('./assets/sounds/Transform_Metal 04.wav')
+                    playSound('./assets/sounds/Validate 01.wav')
                     // TEXTE
                     createText('Metal 100%', 17, 10, - 21.5, 0, 1.75);     
                 }
@@ -554,6 +559,7 @@
                     cartons.position.y = - 5
                     cartons.position.z = 25
                     scene.add( cartons );
+                    playSound('./assets/sounds/Merge_Wood 04.wav')
                     
                     // TEXTE
                     createText('Wood 50%', - 23, 5, 23, 0, 0.75);  
@@ -566,7 +572,8 @@
                     cartons.position.y = - 5
                     cartons.position.z = 25
                     scene.add( cartons );
-                    
+                    playSound('./assets/sounds/Merge_Wood 04.wav')
+                    playSound('./assets/sounds/Validate 01.wav')
                     // TEXTE
                     createText('Wood 100%', - 23, 10, 23, 0, 0.75);     
                 }
@@ -579,6 +586,7 @@
                     verre.position.y = - 5
                     verre.position.z = 25
                     scene.add( verre );
+                    playSound('./assets/sounds/Scale_Organic 01.wav')
 
                     // TEXTE
                     createText('Organic 50%', 21, 5, 20, 0, 1.25);  
@@ -591,12 +599,13 @@
                     verre.position.y = - 5
                     verre.position.z = 25
                     scene.add( verre );
+                    playSound('./assets/sounds/Scale_Organic 01.wav')
+                    playSound('./assets/sounds/Validate 01.wav')
 
                     // TEXTE
                     createText('Organic 100%', 21, 10, 20, 0, 1.25);     
                 }
 
-                console.log(nbMetal, nbOrganic, nbPlastic, nbWood)
             }
             
         }
