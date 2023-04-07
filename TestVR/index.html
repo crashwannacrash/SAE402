@@ -207,7 +207,7 @@
             roomSize = 45
             room = new THREE.LineSegments(
                 new BoxLineGeometry( roomSize + 1, 20, roomSize, 1, 1, 1).translate(0, 3, 0),
-                new THREE.LineBasicMaterial( { color: 0xcccccc})
+                new THREE.LineBasicMaterial( { color: 0xff0000, opacity: 0, transparent: true})
             )
             scene.add( room );
         }
@@ -302,6 +302,7 @@
 					const object = intersection.object;
                     scene.remove(object);
                     group.remove(object);
+                    object.visible = false;
 					controller.userData.selected = object;
 
 				}
@@ -330,6 +331,7 @@
                     inventory.push(object.name);
                     scene.remove(object);
                     group.remove(object);
+                    object.visible = false;
 					controller.userData.selected = undefined;
                     createTowers();
                     console.log(inventory)
@@ -462,8 +464,16 @@
             let verre = undefined
             let metaux = undefined
             let cartons = undefined
+            let nbPlastic = 0
+            let nbOrganic = 0
+            let nbWood = 0
+            let nbMetal = 0
 
-            const forme = new THREE.BoxGeometry( 3, 20, 3 ).translate(0, 8, 0);
+            
+
+            const forme = new THREE.BoxGeometry( 3, 15, 3 ).translate(0, 8, 0);
+            const forme2 = new THREE.BoxGeometry( 3, 20, 3 ).translate(0, 8, 0);
+
             if (inventory.length === 0) {
                 // materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
                 // materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
@@ -471,167 +481,127 @@
                 // materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} );
             }
             else if (inventory.length !== 0) {
-                for (const objs of inventory) {
-                    if (objs == "plastique") {
-                        materialPlastique = new THREE.MeshBasicMaterial( {color: 0x1339eb} ); 
-                        // Plastique
-                        plastique = new THREE.Mesh( forme, materialPlastique );
-                        plastique.position.x = - 26 
-                        plastique.position.y = - 5 
-                        plastique.position.z = - 25
-                        scene.add( plastique );
-
-                        // TEXTE
-                        createText('Plastic', - 25, 10, -20, 0, 0.25);
+                for (const elt of inventory) {
+                    if (elt == "plastic") {
+                        nbPlastic += 1    
                     }
-                    else if (objs == "verre") {
-                        materialVerre = new THREE.MeshBasicMaterial( {color: 0x26422c} );
-                        // Verre
-                        const verre = new THREE.Mesh( forme, materialVerre );
-                        verre.position.x = 26 
-                        verre.position.y = - 5
-                        verre.position.z = 25
-                        scene.add( verre );
-
-                        // TEXTE
-                        createText('Organic', 21, 10, 20, 0, 1.25);
+                    else if (elt == "organic") {
+                        nbOrganic += 1    
                     }
-                    else if (objs == "metaux") {
-                        materialMetaux = new THREE.MeshBasicMaterial( {color: 0xa5adab} );
-                        // Métaux
-                        const metaux = new THREE.Mesh( forme, materialMetaux );
-                        metaux.position.x = 26 
-                        metaux.position.y = - 5
-                        metaux.position.z = - 25
-                        scene.add( metaux );
-
-                        // TEXTE
-                        createText('Metal', 17, 10, - 21.5, 0, 1.75);
+                    else if (elt == "metal") {
+                        nbMetal += 1    
                     }
-                    else if (objs == "cartons") {
-                        materialCartons = new THREE.MeshBasicMaterial( {color: 0x917d2c} );
-                        // Cartons
-                        const cartons = new THREE.Mesh( forme, materialCartons );
-                        cartons.position.x = - 26 
-                        cartons.position.y = - 5
-                        cartons.position.z = 25
-                        scene.add( cartons );
-                        
-                        // TEXTE
-                        createText('Wood', - 23, 10, 23, 0, 0.75);
+                    else if (elt == "wood") {
+                        nbWood += 1    
                     }
                 }
+
+                if (nbPlastic == 1) {
+                    materialPlastique = new THREE.MeshBasicMaterial( {color: 0xffffff} ); 
+                    // Plastique
+                    plastique = new THREE.Mesh( forme, materialPlastique );
+                    plastique.position.x = - 26 
+                    plastique.position.y = - 5 
+                    plastique.position.z = - 25
+                    scene.add( plastique );
+
+                    // TEXTE
+                    createText('Plastic 50%', - 25, 5, -20, 0, 0.25);    
+                }
+                else if (nbPlastic == 2) {
+                    materialPlastique = new THREE.MeshBasicMaterial( {color: 0x4287f5} ); 
+                    // Plastique
+                    plastique = new THREE.Mesh( forme2, materialPlastique );
+                    plastique.position.x = - 26 
+                    plastique.position.y = - 5 
+                    plastique.position.z = - 25
+                    scene.add( plastique );
+
+                    // TEXTE
+                    createText('Plastic 100%', - 25, 10, -20, 0, 0.25);    
+                }
+
+                if (nbMetal == 1) {
+                    materialMetaux = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+                    // Métaux
+                    const metaux = new THREE.Mesh( forme, materialMetaux );
+                    metaux.position.x = 26 
+                    metaux.position.y = - 5
+                    metaux.position.z = - 25
+                    scene.add( metaux );
+
+                    // TEXTE
+                    createText('Metal 50%', 17, 5, - 21.5, 0, 1.75);   
+                }
+                else if (nbMetal == 2) {
+                    materialMetaux = new THREE.MeshBasicMaterial( {color: 0x9c9c9c} );
+                    // Métaux
+                    const metaux = new THREE.Mesh( forme2, materialMetaux );
+                    metaux.position.x = 26 
+                    metaux.position.y = - 5
+                    metaux.position.z = - 25
+                    scene.add( metaux );
+
+                    // TEXTE
+                    createText('Metal 100%', 17, 10, - 21.5, 0, 1.75);     
+                }
+
+                if (nbWood == 1) {
+                    materialCartons = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+                    // Cartons
+                    const cartons = new THREE.Mesh( forme, materialCartons );
+                    cartons.position.x = - 26 
+                    cartons.position.y = - 5
+                    cartons.position.z = 25
+                    scene.add( cartons );
+                    
+                    // TEXTE
+                    createText('Wood 50%', - 23, 5, 23, 0, 0.75);  
+                }
+                else if (nbWood == 2) {
+                    materialCartons = new THREE.MeshBasicMaterial( {color: 0xd18f00} );
+                    // Cartons
+                    const cartons = new THREE.Mesh( forme2, materialCartons );
+                    cartons.position.x = - 26 
+                    cartons.position.y = - 5
+                    cartons.position.z = 25
+                    scene.add( cartons );
+                    
+                    // TEXTE
+                    createText('Wood 100%', - 23, 10, 23, 0, 0.75);     
+                }
+
+                if (nbOrganic == 1) {
+                    materialVerre = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+                    // Organic
+                    const verre = new THREE.Mesh( forme, materialVerre );
+                    verre.position.x = 26 
+                    verre.position.y = - 5
+                    verre.position.z = 25
+                    scene.add( verre );
+
+                    // TEXTE
+                    createText('Organic 50%', 21, 5, 20, 0, 1.25);  
+                }
+                else if (nbOrganic == 2) {
+                    materialVerre = new THREE.MeshBasicMaterial( {color: 0x00e353} );
+                    // Organic
+                    const verre = new THREE.Mesh( forme2, materialVerre );
+                    verre.position.x = 26 
+                    verre.position.y = - 5
+                    verre.position.z = 25
+                    scene.add( verre );
+
+                    // TEXTE
+                    createText('Organic 100%', 21, 10, 20, 0, 1.25);     
+                }
+
+                console.log(nbMetal, nbOrganic, nbPlastic, nbWood)
             }
-            // // Plastique
-            // const plastique = new THREE.Mesh( forme, materialPlastique );
-            // plastique.position.x = - 26 
-            // plastique.position.y = - 5 
-            // plastique.position.z = - 25
-            // scene.add( plastique );
-
-            // // TEXTE
-            // createText('1000° C', - 25, 10, -20, 0, 0.25);
-
-            // // Verre
-            // const verre = new THREE.Mesh( forme, materialVerre );
-            // verre.position.x = 26 
-            // verre.position.y = - 5
-            // verre.position.z = 25
-            // scene.add( verre );
-
-            // // TEXTE
-            // createText('2000° C', 21, 10, 20, 0, 1.25);
-
-            // // Métaux
-            // const metaux = new THREE.Mesh( forme, materialMetaux );
-            // metaux.position.x = 26 
-            // metaux.position.y = - 5
-            // metaux.position.z = - 25
-            // scene.add( metaux );
-
-            // // TEXTE
-            // createText('3000° C', 17, 10, - 21.5, 0, 1.75);
-
-            // // Cartons
-            // const cartons = new THREE.Mesh( forme, materialCartons );
-            // cartons.position.x = - 26 
-            // cartons.position.y = - 5
-            // cartons.position.z = 25
-            // scene.add( cartons );
-            
-            // // TEXTE
-            // createText('4000° C', - 23, 10, 23, 0, 0.75);
             
         }
 
         function createProps() {
-            const plasticBottle = new GLTFLoader();
-            plasticBottle.load("./assets/bottle.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.01,0.01,0.01);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x )+ 16.5;
-                glb.scene.position.y = -7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.5;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
-
-
-            const wood = new GLTFLoader();
-            wood.load("./assets/wood.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.01,0.01,0.01);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) - 17;
-                glb.scene.position.y = - 7;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) - 3.8;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
-
-
-            const colaCan = new GLTFLoader();
-            colaCan.load("./assets/colaCan.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(0.1,0.1,0.1);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x )+2;
-                glb.scene.position.y = - 6.75;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) -21.5;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
-
-
-            const banana = new GLTFLoader();
-            banana.load("./assets/banana.glb", function (glb) {
-                const model = glb.scene;
-                glb.scene.scale.set(100,100,100);
-                // CENTRER L'OBJET A PARTIR DU MILIEU
-                // glb.scene.rotateY(380)
-                const box = new THREE.Box3().setFromObject( glb.scene );
-                const center = box.getCenter( new THREE.Vector3() );
-                glb.scene.position.x += ( glb.scene.position.x - center.x ) -10 ;
-                glb.scene.position.y = -6.5;
-                glb.scene.position.z += ( glb.scene.position.z - center.z ) +21;
-                scene.add(model);
-            }, undefined, function ( error ) {
-                console.error( error );
-            } );
-
             const plasticBin = new GLTFLoader();
             plasticBin.load("./assets/benne.glb", function (glb) {
                 const model = glb.scene;
@@ -649,7 +619,6 @@
             }, undefined, function ( error ) {
                 console.error( error );
             } );
-
             const metalBin = new GLTFLoader();
             metalBin.load("./assets/benne.glb", function (glb) {
                 const model = glb.scene;
@@ -748,37 +717,102 @@
         function createCollectables(){
             group = new THREE.Group();
 			scene.add( group );
+            let metalTexture = new THREE.TextureLoader().load( './assets/props/metal.png' );
+            let organicTexture = new THREE.TextureLoader().load( './assets/props/organic.png' );
+            let plasticTexture = new THREE.TextureLoader().load( './assets/props/plastic.png' );
+            let woodTexture = new THREE.TextureLoader().load( './assets/props/wood.png' );
 
             var cubeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
             var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+            var woodMaterial = [
+                new THREE.MeshBasicMaterial( { map: woodTexture } ),
+                new THREE.MeshBasicMaterial( { map: woodTexture } ),
+                new THREE.MeshBasicMaterial( { map: woodTexture } ),
+                new THREE.MeshBasicMaterial( { map: woodTexture } ),
+                new THREE.MeshBasicMaterial( { map: woodTexture } ),
+                new THREE.MeshBasicMaterial( { map: woodTexture } )
+            ];
+            var organicMaterial = [
+                new THREE.MeshBasicMaterial( { map: organicTexture } ),
+                new THREE.MeshBasicMaterial( { map: organicTexture } ),
+                new THREE.MeshBasicMaterial( { map: organicTexture } ),
+                new THREE.MeshBasicMaterial( { map: organicTexture } ),
+                new THREE.MeshBasicMaterial( { map: organicTexture } ),
+                new THREE.MeshBasicMaterial( { map: organicTexture } )
+            ];
+            var plasticMaterial = [
+                new THREE.MeshBasicMaterial( { map: plasticTexture } ),
+                new THREE.MeshBasicMaterial( { map: plasticTexture } ),
+                new THREE.MeshBasicMaterial( { map: plasticTexture } ),
+                new THREE.MeshBasicMaterial( { map: plasticTexture } ),
+                new THREE.MeshBasicMaterial( { map: plasticTexture } ),
+                new THREE.MeshBasicMaterial( { map: plasticTexture } )
+            ];
+            var metalMaterial = [
+                new THREE.MeshBasicMaterial( { map: metalTexture } ),
+                new THREE.MeshBasicMaterial( { map: metalTexture } ),
+                new THREE.MeshBasicMaterial( { map: metalTexture } ),
+                new THREE.MeshBasicMaterial( { map: metalTexture } ),
+                new THREE.MeshBasicMaterial( { map: metalTexture } ),
+                new THREE.MeshBasicMaterial( { map: metalTexture } )
+            ];
 
-            var cubePlastique = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cubePlastique.position.set( 0, -5, -2 );
-            cubePlastique.userData.isGrabbed = false;
-            cubePlastique.userData.id = 'cubePlastique';
-            cubePlastique.name ="plastique";
-            group.add( cubePlastique )
+            var cubePlastique1 = new THREE.Mesh( cubeGeometry, plasticMaterial );
+            cubePlastique1.position.set( 1.75, -6, -21 );
+            cubePlastique1.userData.isGrabbed = false;
+            cubePlastique1.userData.id = 'cubePlastique1';
+            cubePlastique1.name ="plastic";
+            group.add( cubePlastique1 )
 
-            var cubeVerre = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cubeVerre.position.set( 0, -5, 2 );
-            cubeVerre.userData.isGrabbed = false;
-            cubeVerre.userData.id = 'cubeVerre';
-            cubeVerre.name ="verre";
-            group.add( cubeVerre )
 
-            var cubeCartons = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cubeCartons.position.set( -2, -5, 0 );
-            cubeCartons.userData.isGrabbed = false;
-            cubeCartons.userData.id = 'cubeCartons';
-            cubeCartons.name ="cartons";
-            group.add( cubeCartons )
+            var cubePlastique2 = new THREE.Mesh( cubeGeometry, plasticMaterial );
+            cubePlastique2.position.set( 0.75, -6, 21 );
+            cubePlastique2.userData.isGrabbed = false;
+            cubePlastique2.userData.id = 'cubePlastique2';
+            cubePlastique2.name ="plastic";
+            group.add( cubePlastique2 )
 
-            var cubeMetaux = new THREE.Mesh( cubeGeometry, cubeMaterial );
-            cubeMetaux.position.set( 2, -5, 0 );
-            cubeMetaux.userData.isGrabbed = false;
-            cubeMetaux.userData.id = 'cubeMetaux';
-            cubeMetaux.name ="metaux";
-            group.add( cubeMetaux )
+            var cubeOrganic1 = new THREE.Mesh( cubeGeometry, organicMaterial );
+            cubeOrganic1.position.set( -10, -6, 21 );
+            cubeOrganic1.userData.isGrabbed = false;
+            cubeOrganic1.userData.id = 'cubeOrganic1';
+            cubeOrganic1.name ="organic";
+            group.add( cubeOrganic1 )
+
+            var cubeOrganic2 = new THREE.Mesh( cubeGeometry, organicMaterial );
+            cubeOrganic2.position.set( -17, -6, -3.8 );
+            cubeOrganic2.userData.isGrabbed = false;
+            cubeOrganic2.userData.id = 'cubeorganic2';
+            cubeOrganic2.name ="organic";
+            group.add( cubeOrganic2 )
+
+            var cubeCartons1 = new THREE.Mesh( cubeGeometry, woodMaterial );
+            cubeCartons1.position.set( 16, -6, -2 );
+            cubeCartons1.userData.isGrabbed = false;
+            cubeCartons1.userData.id = 'cubeCartons1';
+            cubeCartons1.name ="wood";
+            group.add( cubeCartons1 )
+
+            var cubeCartons2 = new THREE.Mesh( cubeGeometry, woodMaterial );
+            cubeCartons2.position.set( -16, -6, -17.5 );
+            cubeCartons2.userData.isGrabbed = false;
+            cubeCartons2.userData.id = 'cubeCartons2';
+            cubeCartons2.name ="wood";
+            group.add( cubeCartons2 )
+
+            var cubeMetaux1 = new THREE.Mesh( cubeGeometry, metalMaterial );
+            cubeMetaux1.position.set( 11.5, -6, 12 );
+            cubeMetaux1.userData.isGrabbed = false;
+            cubeMetaux1.userData.id = 'cubeMetaux1';
+            cubeMetaux1.name ="metal";
+            group.add( cubeMetaux1 )
+
+            var cubeMetaux2 = new THREE.Mesh( cubeGeometry, metalMaterial );
+            cubeMetaux2.position.set( -2.75, -6, -12 );
+            cubeMetaux2.userData.isGrabbed = false;
+            cubeMetaux2.userData.id = 'cubeMetaux2';
+            cubeMetaux2.name ="metal";
+            group.add( cubeMetaux2 )
         }
         // ajouter des sons (téléportation, 8 bits)
         // 
